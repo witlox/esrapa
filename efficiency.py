@@ -532,6 +532,7 @@ climate_comparison.plot(kind='bar', ax=ax6, color=['skyblue', 'salmon'])
 ax6.set_xlabel('Climate Event')
 ax6.set_ylabel('Average Loss Ratio')
 ax6.set_title('Climate Events and Greenwashing Interaction')
+ax6.set_xticks([0, 1])  # Ensure the number of ticks matches the labels
 ax6.set_xticklabels(['No Climate Event', 'Climate Event'], rotation=0)
 ax6.legend(['Low Greenwashing', 'High Greenwashing'])
 
