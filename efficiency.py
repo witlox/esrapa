@@ -526,7 +526,8 @@ ax5.set_xticklabels(['Very Low', 'Low', 'Medium', 'High', 'Very High'])
 
 # 6. Climate event impact
 ax6 = axes[1, 2]
-climate_comparison = insurance_data.groupby(['climate_event', 'greenwashing' > insurance_data['greenwashing'].median()])['loss_ratio'].mean().unstack()
+insurance_data['high_greenwashing'] = insurance_data['greenwashing'] > insurance_data['greenwashing'].median()
+climate_comparison = insurance_data.groupby(['climate_event', 'high_greenwashing'])['loss_ratio'].mean().unstack()
 climate_comparison.plot(kind='bar', ax=ax6, color=['skyblue', 'salmon'])
 ax6.set_xlabel('Climate Event')
 ax6.set_ylabel('Average Loss Ratio')
