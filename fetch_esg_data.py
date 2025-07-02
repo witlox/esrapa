@@ -78,59 +78,37 @@ def save_to_parquet(data, file_path):
     """
     Save data to a parquet file.
     """
-    # Normalize data to ensure compatibility with Parquet format
-    normalized_data = {}
-    for key, value in data.items():
-        if isinstance(value, dict):
-            normalized_data[key] = pd.json_normalize(value)
-        else:
-            normalized_data[key] = value
-
-    logging.debug(f"normalized: {normalized_data}")
-
-    # Flatten nested structures in normalized data
-    flattened_data = {}
-    for key, value in normalized_data.items():
-        if isinstance(value, pd.DataFrame):
-            flattened_data[key] = value.to_dict(orient='records')
-        else:
-            flattened_data[key] = value
-
-    logging.debug(f"flattened: {flattened_data}")
-
-    # Convert flattened data into a DataFrame
-    df = pd.DataFrame(flattened_data.items(), columns=['query', 'data'])
-    df.to_parquet(file_path, index=False)
+    # Ensure data is properly unpacked into columns
+    if isinstance(data, pd.DataFrame):
+        data.to_parquet(file_path, index=False)
+    else:
+        raise ValueError("Data must be a pandas DataFrame to save as Parquet.")
 
 
 def main():
     """
     Main function to fetch ESG data and save it to a parquet file.
     """
-    parquet_file = "esg_data.parquet"
-    if not os.path.exists(parquet_file):
-        logging.info("Fetching ESG data from Climate TRACE...")
-        queries = [
-            "emissions_by_sector",
-            "emissions_by_asset",
-            "emissions_by_country",
-            "emissions_trends",
-            "emissions_forecast",
-            "rating_divergence",
-            "insurance_market_dynamics",
-            "greenwashing_effects"
-        ]
-    
-        all_data = {}
-        for query in queries:
+    queries = [
+        "emissions_by_sector",
+        "emissions_by_asset",
+        "emissions_by_country",
+        "emissions_trends",
+        "emissions_forecast",
+        "rating_divergence",
+        "insurance_market_dynamics",
+        "greenwashing_effects"
+    ]
+
+    for query in queries:
+        parquet_file = f"{query}.parquet"
+        if not os.path.exists(parquet_file):
             logging.info(f"Fetching ESG data for query: {query}")
             esg_data = fetch_esg_data(query)
-            all_data[query] = esg_data
-    
-        save_to_parquet(all_data, parquet_file)
-        logging.info(f"ESG data saved to {parquet_file}")
-    else:
-        logging.info(f"{parquet_file} already exists. Skipping data fetch.")
+            save_to_parquet(esg_data, parquet_file)
+            logging.info(f"ESG data for {query} saved to {parquet_file}")
+        else:
+            logging.info(f"{parquet_file} already exists. Skipping data fetch.")
 
 
 if __name__ == "__main__":
