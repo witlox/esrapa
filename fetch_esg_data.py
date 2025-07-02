@@ -27,6 +27,11 @@ def fetch_esg_data(source_name, query):
     response.raise_for_status()
     if response.headers.get("Content-Type") == "application/json":
         return response.json()
+    elif response.headers.get("Content-Type").startswith("text/html"):
+        print(f"Received HTML content from {url}. Saving for debugging.")
+        with open("debug_response.html", "w") as f:
+            f.write(response.text)
+        raise ValueError(f"Unexpected HTML content received from {url}. Check debug_response.html for details.")
     else:
         raise ValueError(f"Unexpected content type: {response.headers.get('Content-Type')}")
 
