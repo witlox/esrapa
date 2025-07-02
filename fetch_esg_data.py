@@ -2,6 +2,17 @@ import os
 import pandas as pd
 import requests
 from datetime import datetime
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler("fetch_esg_data.log"),
+        logging.StreamHandler()
+    ]
+)
 
 
 def fetch_esg_data(query):
@@ -93,7 +104,7 @@ def main():
     """
     parquet_file = "esg_data.parquet"
     if not os.path.exists(parquet_file):
-        print("Fetching ESG data from Climate TRACE...")
+        logging.info("Fetching ESG data from Climate TRACE...")
         queries = [
             "emissions_by_sector",
             "emissions_by_asset",
@@ -107,14 +118,14 @@ def main():
     
         all_data = {}
         for query in queries:
-            print(f"Fetching ESG data for query: {query}")
+            logging.info(f"Fetching ESG data for query: {query}")
             esg_data = fetch_esg_data(query)
             all_data[query] = esg_data
     
         save_to_parquet(all_data, parquet_file)
-        print(f"ESG data saved to {parquet_file}")
+        logging.info(f"ESG data saved to {parquet_file}")
     else:
-        print(f"{parquet_file} already exists. Skipping data fetch.")
+        logging.info(f"{parquet_file} already exists. Skipping data fetch.")
 
 
 if __name__ == "__main__":
