@@ -3,6 +3,8 @@ import pandas as pd
 import requests
 from datetime import datetime
 import logging
+from dataclasses import dataclass
+from typing import List, Optional
 
 # Configure logging
 logging.basicConfig(
@@ -113,3 +115,60 @@ def main():
 
 if __name__ == "__main__":
     main()
+@dataclass
+class Asset:
+    id: str
+    name: str
+    sector: str
+    country: str
+    emissions: float
+    year: int
+    details: Optional[dict] = None
+
+@dataclass
+class EmissionsBySector:
+    sector: str
+    total_emissions: float
+    year: int
+
+@dataclass
+class EmissionsByAsset:
+    asset_id: str
+    asset_name: str
+    emissions: float
+    year: int
+
+@dataclass
+class EmissionsByCountry:
+    country: str
+    total_emissions: float
+    year: int
+
+@dataclass
+class EmissionsTrends:
+    year: int
+    emissions: float
+
+@dataclass
+class EmissionsForecast:
+    year: int
+    projected_emissions: float
+
+@dataclass
+class RatingDivergence:
+    rater_id: str
+    asset_id: str
+    divergence_score: float
+
+@dataclass
+class InsuranceMarketDynamics:
+    insurer_id: str
+    asset_id: str
+    premium: float
+    claims: float
+
+@dataclass
+class GreenwashingEffects:
+    asset_id: str
+    greenwashing_score: float
+    impact_on_ratings: float
