@@ -57,9 +57,9 @@ def fetch_esg_data(query):
         }
     )
     response.raise_for_status()
-    logging.debug(f"response for {query}: {response}")
     if "json" in response.headers.get("Content-Type"):
         response_data = response.json()
+        logging.debug(f"response for {query}: {response_data}")
         if isinstance(response_data, list):
             # Convert list of dictionaries into a DataFrame
             return pd.DataFrame(response_data)
