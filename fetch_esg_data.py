@@ -47,7 +47,15 @@ def fetch_esg_data(query):
     )
     response.raise_for_status()
     if "json" in response.headers.get("Content-Type"):
-        return response.json()
+        response_data = response.json()
+        if isinstance(response_data, list):
+            # Convert list of dictionaries into a DataFrame
+            return pd.DataFrame(response_data)
+        elif isinstance(response_data, dict):
+            # Flatten dictionary into a DataFrame
+            return pd.DataFrame([response_data])
+        else:
+            raise ValueError("Unexpected response format")
     else:
         raise ValueError(
             f"Unexpected content type: {response.headers.get('Content-Type')}"
