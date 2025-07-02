@@ -96,7 +96,12 @@ def decompose_divergence(ratings_df, rater_cols):
     # Standardize ratings
     scaler = StandardScaler()
     ratings_std = pd.DataFrame(
-        scaler.fit_transform(ratings_df[rater_cols]),
+        # Ensure rater columns contain numeric data
+        numeric_rater_cols = ratings_df[rater_cols].select_dtypes(include=[np.number])
+        if numeric_rater_cols.empty:
+            raise ValueError("No numeric data found in rater columns for divergence analysis.")
+    
+        scaler.fit_transform(numeric_rater_cols),
         columns=rater_cols
     )
     
