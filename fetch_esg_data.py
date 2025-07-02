@@ -307,6 +307,7 @@ def save_to_parquet(data, file_path):
                         item_dict[f"{key}_{sub_key}"] = sub_value
                     del item_dict[key]
             data_dicts.append(item_dict)
+        logging.info(f"data dicts: {data_dicts}")
         df = pd.DataFrame(data_dicts)
         if not df.empty:
             df.to_parquet(file_path, index=False)
