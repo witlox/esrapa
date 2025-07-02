@@ -132,7 +132,13 @@ def fetch_esg_data(query):
         if isinstance(response_data, list):
             # Map response data to appropriate dataclass instances
             if query == "emissions_by_sector":
-                return [EmissionsBySector(**item) for item in response_data]
+                return [
+                    EmissionsBySector(
+                        sector=item["sector"],
+                        total_emissions=item["total_emissions"],
+                        year=item["year"]
+                    ) for item in response_data
+                ]
             elif query == "emissions_by_asset":
                 return [
                     EmissionsByAsset(
