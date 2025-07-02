@@ -293,8 +293,9 @@ def main():
         if not os.path.exists(parquet_file):
             logging.info(f"Fetching ESG data for query: {query}")
             esg_data = fetch_esg_data(query)
+            logging.info(f"ESG data: {esg_data}")
             save_to_parquet(esg_data, parquet_file)
-            logging.info(f"ESG data for {query} saved to {parquet_file}")
+            logging.info(f"ESG data saved to {parquet_file}")
         else:
             logging.info(f"{parquet_file} already exists. Skipping data fetch.")
 
