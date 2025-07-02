@@ -297,7 +297,16 @@ def save_to_parquet(data, file_path):
     # Ensure data is properly unpacked into columns
     if isinstance(data, list) and all(isinstance(item, (EmissionsBySector, EmissionsByAsset, EmissionsByCountry, EmissionsTrends, EmissionsForecast, RatingDivergence, InsuranceMarketDynamics, GreenwashingEffects)) for item in data):
         # Convert list of dataclass instances to DataFrame
-        data_dicts = [item.__dict__ for item in data]
+        data_dicts = []
+        for item in data:
+            item_dict = item.__dict__.copy()
+            # Flatten nested dictionaries if present
+            for key, value in item_dict.items():
+                if isinstance(value, dict):
+                    for sub_key, sub_value in value.items():
+                        item_dict[f"{key}_{sub_key}"] = sub_value
+                    del item_dict[key]
+            data_dicts.append(item_dict)
         df = pd.DataFrame(data_dicts)
         df.to_parquet(file_path, index=False)
     elif isinstance(data, pd.DataFrame):
