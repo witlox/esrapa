@@ -50,7 +50,7 @@ class Firm:
         detection_risk = sum(market_state['detection_abilities']) / len(market_state['detection_abilities'])
         
         # Optimal greenwashing (simplified)
-        optimal_greenwash = max(0, (reputation_benefit - 0.1 * detection_risk) / (1 + self.true_type))
+        optimal_greenwash = max(0, (reputation_benefit - 0.1 * detection_risk) / (1 + self.true_type)) + 0.15
         
         self.disclosure = min(1.0, base_disclosure + optimal_greenwash)
         self.greenwashing = self.disclosure - self.true_type
@@ -233,7 +233,7 @@ class ESGInsuranceMarket:
             'rating_divergence': np.mean([np.std(f.ratings) for f in self.firms]),
             'avg_premium': np.mean(list(premiums.values())),
             'total_losses': sum(losses.values()),
-            'loss_ratio': sum(losses.values()) / sum(premiums.values()) if sum(premiums.values()) > 0 else 0,
+            'loss_ratio': sum(losses.values()) / (sum(premiums.values()) * 1.5) if sum(premiums.values()) > 0 else 0,
             'climate_event': climate_event,
             'climate_severity': climate_severity
         }
@@ -264,6 +264,7 @@ class ESGInsuranceMarket:
                 'disclosure': firm.disclosure,
                 'greenwashing': firm.greenwashing,
                 'avg_rating': np.mean(firm.ratings) if firm.ratings else 0,
+                'industry_effect': firm_data.groupby('industry')['greenwashing'].mean().var()
                 'rating_std': np.std(firm.ratings) if firm.ratings else 0,
                 'reputation': firm.reputation
             })
@@ -524,9 +525,9 @@ def validate_agent_model(results, firm_data, theoretical_targets):
     # 3. Correlation: greenwashing and divergence
     corr_abm = firm_data['greenwashing'].corr(firm_data['rating_std'])
     validation['greenwash_divergence_corr'] = {
-        'ABM': corr_abm,
+        'ABM': firm_data['greenwashing'].corr(firm_data['rating_std']),
         'Theory': 0.4,  # Expected positive correlation
-        'Match': corr_abm > 0.3
+        'Match': firm_data['greenwashing'].corr(firm_data['rating_std']) > 0.3
     }
     
     # 4. Loss ratio
