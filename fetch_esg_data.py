@@ -134,7 +134,14 @@ def fetch_esg_data(query):
             if query == "emissions_by_sector":
                 return [EmissionsBySector(**item) for item in response_data]
             elif query == "emissions_by_asset":
-                return [EmissionsByAsset(**item) for item in response_data]
+                return [
+                    EmissionsByAsset(
+                        asset_id=item["asset"]["id"],
+                        asset_name=item["asset"]["name"],
+                        emissions=item["emissions"],
+                        year=item["year"]
+                    ) for item in response_data
+                ]
             elif query == "emissions_by_country":
                 return [EmissionsByCountry(**item) for item in response_data]
             elif query == "emissions_trends":
@@ -142,11 +149,30 @@ def fetch_esg_data(query):
             elif query == "emissions_forecast":
                 return [EmissionsForecast(**item) for item in response_data]
             elif query == "rating_divergence":
-                return [RatingDivergence(**item) for item in response_data]
+                return [
+                    RatingDivergence(
+                        rater_id=item["rater"]["id"],
+                        asset_id=item["asset"]["id"],
+                        divergence_score=item["divergence_score"]
+                    ) for item in response_data
+                ]
             elif query == "insurance_market_dynamics":
-                return [InsuranceMarketDynamics(**item) for item in response_data]
+                return [
+                    InsuranceMarketDynamics(
+                        insurer_id=item["insurer"]["id"],
+                        asset_id=item["asset"]["id"],
+                        premium=item["premium"],
+                        claims=item["claims"]
+                    ) for item in response_data
+                ]
             elif query == "greenwashing_effects":
-                return [GreenwashingEffects(**item) for item in response_data]
+                return [
+                    GreenwashingEffects(
+                        asset_id=item["asset"]["id"],
+                        greenwashing_score=item["greenwashing_score"],
+                        impact_on_ratings=item["impact_on_ratings"]
+                    ) for item in response_data
+                ]
             else:
                 raise ValueError(f"Unknown query type: {query}")
         elif isinstance(response_data, dict):
