@@ -130,11 +130,45 @@ def fetch_esg_data(query):
         response_data = response.json()
         logging.debug(f"response for {query}: {response_data}")
         if isinstance(response_data, list):
-            # Convert list of dictionaries into a DataFrame
-            return pd.DataFrame(response_data)
+            # Map response data to appropriate dataclass instances
+            if query == "emissions_by_sector":
+                return [EmissionsBySector(**item) for item in response_data]
+            elif query == "emissions_by_asset":
+                return [EmissionsByAsset(**item) for item in response_data]
+            elif query == "emissions_by_country":
+                return [EmissionsByCountry(**item) for item in response_data]
+            elif query == "emissions_trends":
+                return [EmissionsTrends(**item) for item in response_data]
+            elif query == "emissions_forecast":
+                return [EmissionsForecast(**item) for item in response_data]
+            elif query == "rating_divergence":
+                return [RatingDivergence(**item) for item in response_data]
+            elif query == "insurance_market_dynamics":
+                return [InsuranceMarketDynamics(**item) for item in response_data]
+            elif query == "greenwashing_effects":
+                return [GreenwashingEffects(**item) for item in response_data]
+            else:
+                raise ValueError(f"Unknown query type: {query}")
         elif isinstance(response_data, dict):
-            # Flatten dictionary into a DataFrame
-            return pd.DataFrame([response_data])
+            # Map single dictionary response to appropriate dataclass instance
+            if query == "emissions_by_sector":
+                return EmissionsBySector(**response_data)
+            elif query == "emissions_by_asset":
+                return EmissionsByAsset(**response_data)
+            elif query == "emissions_by_country":
+                return EmissionsByCountry(**response_data)
+            elif query == "emissions_trends":
+                return EmissionsTrends(**response_data)
+            elif query == "emissions_forecast":
+                return EmissionsForecast(**response_data)
+            elif query == "rating_divergence":
+                return RatingDivergence(**response_data)
+            elif query == "insurance_market_dynamics":
+                return InsuranceMarketDynamics(**response_data)
+            elif query == "greenwashing_effects":
+                return GreenwashingEffects(**response_data)
+            else:
+                raise ValueError(f"Unknown query type: {query}")
         else:
             raise ValueError("Unexpected response format")
     else:
