@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import requests
 
+
 def fetch_esg_data(source_name, query):
     """
     Fetch ESG data from various free sources.
@@ -16,12 +17,12 @@ def fetch_esg_data(source_name, query):
         "S&P Global ESG Scores": "https://www.spglobal.com/esg/solutions/data-intelligence-esg-scores",
         "UN Data": "https://data.un.org/default.aspx",
         "World Bank Open Data": "https://data.worldbank.org/",
-        "Sustainable Development Report": "https://dashboards.sdgindex.org/profiles"
+        "Sustainable Development Report": "https://dashboards.sdgindex.org/profiles",
     }
-    
+
     if source_name not in sources:
         raise ValueError(f"Source '{source_name}' is not supported.")
-    
+
     url = sources[source_name]
     response = requests.get(url, params={"query": query})
     response.raise_for_status()
@@ -31,9 +32,14 @@ def fetch_esg_data(source_name, query):
         print(f"Received HTML content from {url}. Saving for debugging.")
         with open("debug_response.html", "w") as f:
             f.write(response.text)
-        raise ValueError(f"Unexpected HTML content received from {url}. Check debug_response.html for details.")
+        raise ValueError(
+            f"Unexpected HTML content received from {url}. Check debug_response.html for details."
+        )
     else:
-        raise ValueError(f"Unexpected content type: {response.headers.get('Content-Type')}")
+        raise ValueError(
+            f"Unexpected content type: {response.headers.get('Content-Type')}"
+        )
+
 
 def save_to_parquet(data, file_path):
     """
@@ -41,6 +47,7 @@ def save_to_parquet(data, file_path):
     """
     df = pd.DataFrame(data)
     df.to_parquet(file_path, index=False)
+
 
 def main():
     """
@@ -56,6 +63,7 @@ def main():
         print(f"ESG data saved to {parquet_file}")
     else:
         print(f"{parquet_file} already exists. Skipping data fetch.")
+
 
 if __name__ == "__main__":
     main()
