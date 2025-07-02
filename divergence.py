@@ -323,6 +323,15 @@ rdd_data = esg_data[near_threshold].copy()
 below = rdd_data[rdd_data['employees'] < 500]
 above = rdd_data[rdd_data['employees'] >= 500]
 
+# Fit separate regressions on each side
+X_below = below[['employees']]
+y_below = below['divergence_rdd']
+X_above = above[['employees']]
+y_above = above['divergence_rdd']
+
+model_below = LinearRegression().fit(X_below, y_below)
+model_above = LinearRegression().fit(X_above, y_above)
+
 # Estimate discontinuity
 discontinuity = model_above.predict([[500]])[0] - model_below.predict([[499]])[0]
 
