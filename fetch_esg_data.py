@@ -308,7 +308,11 @@ def save_to_parquet(data, file_path):
                     del item_dict[key]
             data_dicts.append(item_dict)
         df = pd.DataFrame(data_dicts)
-        df.to_parquet(file_path, index=False)
+        if not df.empty:
+            df.to_parquet(file_path, index=False)
+            logging.info(f"Data successfully written to {file_path}")
+        else:
+            logging.warning(f"No data to write to {file_path}")
     elif isinstance(data, pd.DataFrame):
         data.to_parquet(file_path, index=False)
     else:
@@ -335,7 +339,10 @@ def main():
         if not os.path.exists(parquet_file):
             logging.info(f"Fetching ESG data for query: {query}")
             esg_data = fetch_esg_data(query)
-            logging.info(f"ESG data: {esg_data}")
+            if esg_data:
+                logging.info(f"ESG data fetched successfully for query: {query}")
+            else:
+                logging.warning(f"No data fetched for query: {query}")
             save_to_parquet(esg_data, parquet_file)
             logging.info(f"ESG data saved to {parquet_file}")
         else:
