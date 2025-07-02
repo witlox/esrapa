@@ -5,6 +5,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+# Load ESG data from esg_data.parquet
+esg_data = pd.read_parquet("esg_data.parquet")
 from dataclasses import dataclass
 from typing import List, Dict, Tuple
 import networkx as nx
