@@ -58,7 +58,15 @@ def save_to_parquet(data, file_path):
     """
     Save data to a parquet file.
     """
-    df = pd.DataFrame(data)
+    # Normalize data to ensure compatibility with Parquet format
+    normalized_data = {}
+    for key, value in data.items():
+        if isinstance(value, dict):
+            normalized_data[key] = pd.json_normalize(value)
+        else:
+            normalized_data[key] = value
+
+    df = pd.DataFrame(normalized_data)
     df.to_parquet(file_path, index=False)
 
 
