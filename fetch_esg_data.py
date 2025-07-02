@@ -3,27 +3,11 @@ import pandas as pd
 import requests
 
 
-def fetch_esg_data(source_name, query):
+def fetch_esg_data(query):
     """
-    Fetch ESG data from various free sources.
+    Fetch ESG data from CDP.
     """
-    sources = {
-        "WWF Risk Filter Suite": "https://riskfilter.org/data-download",
-        "MSCI ESG Fund Ratings": "https://www.msci.com/documents/10199/242721/MSCI_ESG_Fund_Ratings.xlsx",
-        "MSCI ESG Ratings": "https://www.msci.com/documents/10199/242721/MSCI_ESG_Ratings.xlsx",
-        "Sustainalytics ESG Risk Ratings": "https://www.sustainalytics.com/esg-risk-ratings-data",
-        "Refinitiv ESG Scores": "https://www.refinitiv.com/en/sustainable-finance/esg-scores-data",
-        "SASB Materiality Finder": "https://www.sasb.org/materiality-finder-data",
-        "S&P Global ESG Scores": "https://www.spglobal.com/esg/scores-data",
-        "UN Data": "https://data.un.org/download",
-        "World Bank Open Data": "https://data.worldbank.org/download",
-        "Sustainable Development Report": "https://dashboards.sdgindex.org/download",
-    }
-
-    if source_name not in sources:
-        raise ValueError(f"Source '{source_name}' is not supported.")
-
-    url = sources[source_name]
+    url = "https://www.cdp.net/en/data"
     response = requests.get(url, params={"query": query})
     response.raise_for_status()
     if response.headers.get("Content-Type") == "application/json":
@@ -55,10 +39,9 @@ def main():
     """
     parquet_file = "esg_data.parquet"
     if not os.path.exists(parquet_file):
-        print("Fetching ESG data from free sources...")
-        source_name = "Sustainalytics ESG Risk Ratings"  # Example source
+        print("Fetching ESG data from CDP...")
         query = "AAPL"  # Example query (ticker or company name)
-        esg_data = fetch_esg_data(source_name, query)
+        esg_data = fetch_esg_data(query)
         save_to_parquet(esg_data, parquet_file)
         print(f"ESG data saved to {parquet_file}")
     else:
