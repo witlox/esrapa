@@ -129,128 +129,130 @@ def fetch_esg_data(query):
     if "json" in response.headers.get("Content-Type"):
         response_data = response.json()
         logging.debug(f"response for {query}: {response_data}")
+        results = []
         if isinstance(response_data, list):
             # Map response data to appropriate dataclass instances
             if query == "emissions_by_sector":
-                return [
+                results.extend([
                     EmissionsBySector(
                         sector=item.get("sector"),
                         total_emissions=item.get("total_emissions"),
                         year=item.get("year")
                     ) for item in response_data
-                ]
+                ])
             elif query == "emissions_by_asset":
-                return [
+                results.extend([
                     EmissionsByAsset(
                         asset_id=item.get("asset", {}).get("id"),
                         asset_name=item.get("asset", {}).get("name"),
                         emissions=item.get("emissions"),
                         year=item.get("year")
                     ) for item in response_data
-                ]
+                ])
             elif query == "emissions_by_country":
-                return [
+                results.extend([
                     EmissionsByCountry(
                         country=item.get("country"),
                         total_emissions=item.get("total_emissions"),
                         year=item.get("year")
                     ) for item in response_data
-                ]
+                ])
             elif query == "emissions_trends":
-                return [
+                results.extend([
                     EmissionsTrends(
                         year=item.get("year"),
                         emissions=item.get("emissions")
                     ) for item in response_data
-                ]
+                ])
             elif query == "emissions_forecast":
-                return [
+                results.extend([
                     EmissionsForecast(
                         year=item.get("year"),
                         projected_emissions=item.get("projected_emissions")
                     ) for item in response_data
-                ]
+                ])
             elif query == "rating_divergence":
-                return [
+                results.extend([
                     RatingDivergence(
                         rater_id=item.get("rater", {}).get("id"),
                         asset_id=item.get("asset", {}).get("id"),
                         divergence_score=item.get("divergence_score")
                     ) for item in response_data
-                ]
+                ])
             elif query == "insurance_market_dynamics":
-                return [
+                results.extend([
                     InsuranceMarketDynamics(
                         insurer_id=item.get("insurer", {}).get("id"),
                         asset_id=item.get("asset", {}).get("id"),
                         premium=item.get("premium"),
                         claims=item.get("claims")
                     ) for item in response_data
-                ]
+                ])
             elif query == "greenwashing_effects":
-                return [
+                results.extend([
                     GreenwashingEffects(
                         asset_id=item.get("asset", {}).get("id"),
                         greenwashing_score=item.get("greenwashing_score"),
                         impact_on_ratings=item.get("impact_on_ratings")
                     ) for item in response_data
-                ]
+                ])
             else:
                 raise ValueError(f"Unknown query type: {query}")
         elif isinstance(response_data, dict):
             # Map single dictionary response to appropriate dataclass instance
             if query == "emissions_by_sector":
-                return EmissionsBySector(
+                results.append(EmissionsBySector(
                     sector=response_data.get("sector"),
                     total_emissions=response_data.get("total_emissions"),
                     year=response_data.get("year")
-                )
+                ))
             elif query == "emissions_by_asset":
-                return EmissionsByAsset(
+                results.append(EmissionsByAsset(
                     asset_id=response_data.get("asset", {}).get("id"),
                     asset_name=response_data.get("asset", {}).get("name"),
                     emissions=response_data.get("emissions"),
                     year=response_data.get("year")
-                )
+                ))
             elif query == "emissions_by_country":
-                return EmissionsByCountry(
+                results.append(EmissionsByCountry(
                     country=response_data.get("country"),
                     total_emissions=response_data.get("total_emissions"),
                     year=response_data.get("year")
-                )
+                ))
             elif query == "emissions_trends":
-                return EmissionsTrends(
+                results.append(EmissionsTrends(
                     year=response_data.get("year"),
                     emissions=response_data.get("emissions")
-                )
+                ))
             elif query == "emissions_forecast":
-                return EmissionsForecast(
+                results.append(EmissionsForecast(
                     year=response_data.get("year"),
                     projected_emissions=response_data.get("projected_emissions")
-                )
+                ))
             elif query == "rating_divergence":
-                return RatingDivergence(
+                results.append(RatingDivergence(
                     rater_id=response_data.get("rater", {}).get("id"),
                     asset_id=response_data.get("asset", {}).get("id"),
                     divergence_score=response_data.get("divergence_score")
-                )
+                ))
             elif query == "insurance_market_dynamics":
-                return InsuranceMarketDynamics(
+                results.append(InsuranceMarketDynamics(
                     insurer_id=response_data.get("insurer", {}).get("id"),
                     asset_id=response_data.get("asset", {}).get("id"),
                     premium=response_data.get("premium"),
                     claims=response_data.get("claims")
-                )
+                ))
             elif query == "greenwashing_effects":
-                return GreenwashingEffects(
+                results.append(GreenwashingEffects(
                     asset_id=response_data.get("asset", {}).get("id"),
                     greenwashing_score=response_data.get("greenwashing_score"),
                     impact_on_ratings=response_data.get("impact_on_ratings")
-                )
+                ))
             else:
                 raise ValueError(f"Unknown query type: {query}")
         else:
             raise ValueError("Unexpected response format")
+        return results
     else:
         raise ValueError(
             f"Unexpected content type: {response.headers.get('Content-Type')}"
