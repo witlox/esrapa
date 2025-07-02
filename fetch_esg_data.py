@@ -25,7 +25,10 @@ def fetch_esg_data(source_name, query):
     url = sources[source_name]
     response = requests.get(url, params={"query": query})
     response.raise_for_status()
-    return response.json()
+    if response.headers.get("Content-Type") == "application/json":
+        return response.json()
+    else:
+        raise ValueError(f"Unexpected content type: {response.headers.get('Content-Type')}")
 
 def save_to_parquet(data, file_path):
     """
