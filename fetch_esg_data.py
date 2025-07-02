@@ -259,13 +259,18 @@ def fetch_esg_data(query):
 
 def save_to_parquet(data, file_path):
     """
-    Save data to a parquet file.
+    Save data to a parquet file. Convert dataclass instances to DataFrame if necessary.
     """
     # Ensure data is properly unpacked into columns
-    if isinstance(data, pd.DataFrame):
+    if isinstance(data, list) and all(isinstance(item, (EmissionsBySector, EmissionsByAsset, EmissionsByCountry, EmissionsTrends, EmissionsForecast, RatingDivergence, InsuranceMarketDynamics, GreenwashingEffects)) for item in data):
+        # Convert list of dataclass instances to DataFrame
+        data_dicts = [item.__dict__ for item in data]
+        df = pd.DataFrame(data_dicts)
+        df.to_parquet(file_path, index=False)
+    elif isinstance(data, pd.DataFrame):
         data.to_parquet(file_path, index=False)
     else:
-        raise ValueError("Data must be a pandas DataFrame to save as Parquet.")
+        raise ValueError("Data must be a pandas DataFrame or a list of dataclass instances to save as Parquet.")
 
 
 def main():
