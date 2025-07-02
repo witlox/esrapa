@@ -9,7 +9,11 @@ This repository contains Python scripts for analyzing ESG ratings, modeling insu
 
 ## Installation
 To install the required dependencies, run:
-
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
 ## Usage
 1. **Divergence Analysis**:
