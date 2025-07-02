@@ -111,19 +111,41 @@ def fetch_esg_data(query):
     """
     Fetch ESG data from Climate TRACE API.
     """
-    url = "https://api.climatetrace.org/v6/assets"
+    base_url = "https://api.climatetrace.org/v6"
+    endpoints = {
+        "emissions_by_sector": "/country/emissions",
+        "emissions_by_asset": "/assets",
+        "emissions_by_country": "/country/emissions",
+        "emissions_trends": "/country/emissions",
+        "emissions_forecast": "/country/emissions",
+        "rating_divergence": "/assets/{sourceId}",
+        "insurance_market_dynamics": "/assets/emissions",
+        "greenwashing_effects": "/assets/emissions"
+    }
+    if query not in endpoints:
+        raise ValueError(f"Unknown query type: {query}")
+    
+    url = f"{base_url}{endpoints[query]}"
     headers = {
         "Accept": "application/json"
     }
+    params = {}
+    if query in ["emissions_by_sector", "emissions_by_country", "emissions_trends", "emissions_forecast"]:
+        params = {
+            "since": 2022,
+            "to": datetime.now().year,
+            "sector_optional": ["power", "transportation", "buildings"]
+        }
+    elif query in ["emissions_by_asset", "rating_divergence", "insurance_market_dynamics", "greenwashing_effects"]:
+        params = {
+            "year": 2022,
+            "countries_csv_optional": ["USA", "CAN", "MEX"]
+        }
+    
     response = requests.get(
         url,
         headers=headers,
-        params={
-            "query": query,
-            "start_year": 2022,
-            "end_year": datetime.now().year,
-            "detail_level": "high"
-        }
+        params=params
     )
     response.raise_for_status()
     if "json" in response.headers.get("Content-Type"):
