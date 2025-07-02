@@ -13,6 +13,19 @@ def fetch_esg_data(query):
     - "emissions_by_country" for country-level emissions data
     - "emissions_trends" for historical emissions trends
     - "emissions_forecast" for projected emissions data
+    - "rating_divergence" for ESG rating divergence analysis
+    - "insurance_market_dynamics" for insurance market dynamics
+    - "greenwashing_effects" for greenwashing and its impact on ESG ratings
+    """
+    """
+    Fetch ESG data from Climate TRACE API.
+
+    Relevant queries based on divergence.py, dynamics.py, and efficiency.py:
+    - "emissions_by_sector" for sector-level emissions data
+    - "emissions_by_asset" for asset-level emissions data
+    - "emissions_by_country" for country-level emissions data
+    - "emissions_trends" for historical emissions trends
+    - "emissions_forecast" for projected emissions data
     """
     """
     Fetch ESG data from Climate TRACE API.
