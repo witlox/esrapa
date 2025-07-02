@@ -145,7 +145,8 @@ def fetch_esg_data(query):
     if query == "rating_divergence":
         source_id = params.get("sourceId", 1)  # Default to 1 if no sourceId is provided
         url = f"{base_url}/assets/{source_id}"
-        del params["sourceId"]  # Remove sourceId from params as it's part of the URL
+        if "sourceId" in params:
+            del params["sourceId"]  # Remove sourceId from params as it's part of the URL
 
     response = requests.get(
         url,
