@@ -134,49 +134,65 @@ def fetch_esg_data(query):
             if query == "emissions_by_sector":
                 return [
                     EmissionsBySector(
-                        sector=item["sector"],
-                        total_emissions=item["total_emissions"],
-                        year=item["year"]
-                    ) for item in response_data if "sector" in item and "total_emissions" in item and "year" in item
+                        sector=item.get("sector"),
+                        total_emissions=item.get("total_emissions"),
+                        year=item.get("year")
+                    ) for item in response_data
                 ]
             elif query == "emissions_by_asset":
                 return [
                     EmissionsByAsset(
-                        asset_id=item["asset"]["id"],
-                        asset_name=item["asset"]["name"],
-                        emissions=item["emissions"],
-                        year=item["year"]
+                        asset_id=item.get("asset", {}).get("id"),
+                        asset_name=item.get("asset", {}).get("name"),
+                        emissions=item.get("emissions"),
+                        year=item.get("year")
                     ) for item in response_data
                 ]
             elif query == "emissions_by_country":
-                return [EmissionsByCountry(**item) for item in response_data]
+                return [
+                    EmissionsByCountry(
+                        country=item.get("country"),
+                        total_emissions=item.get("total_emissions"),
+                        year=item.get("year")
+                    ) for item in response_data
+                ]
             elif query == "emissions_trends":
-                return [EmissionsTrends(**item) for item in response_data]
+                return [
+                    EmissionsTrends(
+                        year=item.get("year"),
+                        emissions=item.get("emissions")
+                    ) for item in response_data
+                ]
             elif query == "emissions_forecast":
-                return [EmissionsForecast(**item) for item in response_data]
+                return [
+                    EmissionsForecast(
+                        year=item.get("year"),
+                        projected_emissions=item.get("projected_emissions")
+                    ) for item in response_data
+                ]
             elif query == "rating_divergence":
                 return [
                     RatingDivergence(
-                        rater_id=item["rater"]["id"],
-                        asset_id=item["asset"]["id"],
-                        divergence_score=item["divergence_score"]
+                        rater_id=item.get("rater", {}).get("id"),
+                        asset_id=item.get("asset", {}).get("id"),
+                        divergence_score=item.get("divergence_score")
                     ) for item in response_data
                 ]
             elif query == "insurance_market_dynamics":
                 return [
                     InsuranceMarketDynamics(
-                        insurer_id=item["insurer"]["id"],
-                        asset_id=item["asset"]["id"],
-                        premium=item["premium"],
-                        claims=item["claims"]
+                        insurer_id=item.get("insurer", {}).get("id"),
+                        asset_id=item.get("asset", {}).get("id"),
+                        premium=item.get("premium"),
+                        claims=item.get("claims")
                     ) for item in response_data
                 ]
             elif query == "greenwashing_effects":
                 return [
                     GreenwashingEffects(
-                        asset_id=item["asset"]["id"],
-                        greenwashing_score=item["greenwashing_score"],
-                        impact_on_ratings=item["impact_on_ratings"]
+                        asset_id=item.get("asset", {}).get("id"),
+                        greenwashing_score=item.get("greenwashing_score"),
+                        impact_on_ratings=item.get("impact_on_ratings")
                     ) for item in response_data
                 ]
             else:
