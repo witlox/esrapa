@@ -137,7 +137,7 @@ def fetch_esg_data(query):
                         sector=item["sector"],
                         total_emissions=item["total_emissions"],
                         year=item["year"]
-                    ) for item in response_data
+                    ) for item in response_data if "sector" in item and "total_emissions" in item and "year" in item
                 ]
             elif query == "emissions_by_asset":
                 return [
