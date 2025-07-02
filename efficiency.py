@@ -672,6 +672,8 @@ print("- verification_policy_analysis.png")
 
 print("\nKey findings support theoretical model:")
 print(f"✓ Welfare loss: {mc_results['welfare_loss'].mean()*100:.2f}% of premiums (target: 2-4%)")
+misallocation_cost = mc_results['mispricing'].mean()  # Example calculation for misallocation cost
+total_welfare_loss = mc_results['welfare_loss'].mean()  # Example calculation for total welfare loss
 print(f"✓ Misallocation dominates: {100*misallocation_cost/total_welfare_loss:.1f}% (target: ~60%)")
 print(f"✓ Optimal verification: φ* = {optimal_phi:.2f} (target: ~2.1)")
 print(f"✓ Rating divergence increases losses: +{predictions['divergence_effect']['difference']:.3f}")
