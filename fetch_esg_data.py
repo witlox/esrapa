@@ -301,7 +301,7 @@ def save_to_parquet(data, file_path):
         for item in data:
             item_dict = item.__dict__.copy()
             # Flatten nested dictionaries if present
-            for key, value in item_dict.items():
+            for key, value in list(item_dict.items()):
                 if isinstance(value, dict):
                     for sub_key, sub_value in value.items():
                         item_dict[f"{key}_{sub_key}"] = sub_value
