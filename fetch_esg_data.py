@@ -157,55 +157,55 @@ def fetch_esg_data(query):
             if query == "emissions_by_sector":
                 results.extend([
                     EmissionsBySector(
-                        sector=item.get("sector"),
-                        total_emissions=item.get("total_emissions"),
-                        year=item.get("year")
+                        sector=item.get("Sector"),
+                        total_emissions=item.get("Emissions"),
+                        year=item.get("Year")
                     ) for item in response_data
                 ])
             elif query == "emissions_by_asset":
                 results.extend([
                     EmissionsByAsset(
-                        asset_id=item.get("asset", {}).get("id"),
-                        asset_name=item.get("asset", {}).get("name"),
-                        emissions=item.get("emissions"),
-                        year=item.get("year")
+                        asset_id=item.get("id"),
+                        asset_name=item.get("description"),
+                        emissions=item.get("emissions")[0].get("quantity"),
+                        year=item.get("emissions")[0].get("year")
                     ) for item in response_data
                 ])
             elif query == "emissions_by_country":
                 results.extend([
                     EmissionsByCountry(
-                        country=item.get("country"),
-                        total_emissions=item.get("total_emissions"),
-                        year=item.get("year")
+                        country=item.get("Country"),
+                        total_emissions=item.get("Emissions"),
+                        year=item.get("Year")
                     ) for item in response_data
                 ])
             elif query == "emissions_trends":
                 results.extend([
                     EmissionsTrends(
                         year=item.get("year"),
-                        emissions=item.get("emissions")
+                        emissions=item.get("emissions")[0].get("quantity")
                     ) for item in response_data
                 ])
             elif query == "emissions_forecast":
                 results.extend([
                     EmissionsForecast(
                         year=item.get("year"),
-                        projected_emissions=item.get("projected_emissions")
+                        projected_emissions=item.get("emissions")[0].get("quantity")
                     ) for item in response_data
                 ])
             elif query == "rating_divergence":
                 results.extend([
                     RatingDivergence(
-                        rater_id=item.get("rater", {}).get("id"),
-                        asset_id=item.get("asset", {}).get("id"),
+                        rater_id=item.get("rater_id"),
+                        asset_id=item.get("id"),
                         divergence_score=item.get("divergence_score")
                     ) for item in response_data
                 ])
             elif query == "insurance_market_dynamics":
                 results.extend([
                     InsuranceMarketDynamics(
-                        insurer_id=item.get("insurer", {}).get("id"),
-                        asset_id=item.get("asset", {}).get("id"),
+                        insurer_id=item.get("insurer_id"),
+                        asset_id=item.get("id"),
                         premium=item.get("premium"),
                         claims=item.get("claims")
                     ) for item in response_data
@@ -213,7 +213,7 @@ def fetch_esg_data(query):
             elif query == "greenwashing_effects":
                 results.extend([
                     GreenwashingEffects(
-                        asset_id=item.get("asset", {}).get("id"),
+                        asset_id=item.get("id"),
                         greenwashing_score=item.get("greenwashing_score"),
                         impact_on_ratings=item.get("impact_on_ratings")
                     ) for item in response_data
