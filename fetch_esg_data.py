@@ -34,7 +34,16 @@ def fetch_esg_data(query):
     headers = {
         "Accept": "application/json"
     }
-    response = requests.get(url, headers=headers, params={"query": query})
+    response = requests.get(
+        url,
+        headers=headers,
+        params={
+            "query": query,
+            "start_year": 2022,
+            "end_year": datetime.now().year,
+            "detail_level": "high"
+        }
+    )
     response.raise_for_status()
     if response.headers.get("Content-Type") == "application/json":
         return response.json()
