@@ -296,9 +296,9 @@ def welfare_decomposition_analysis(params, n_firms=5000):
         'Component': ['Direct Costs', 'Misallocation', 'Externalities', 'Total'],
         'Value': [avg_direct_cost, misallocation_cost, externality_cost, total_welfare_loss],
         'Percentage': [
-            100 * avg_direct_cost / total_welfare_loss,
-            100 * misallocation_cost / total_welfare_loss,
-            100 * externality_cost / total_welfare_loss,
+            100 * avg_direct_cost / (avg_direct_cost + misallocation_cost + externality_cost),
+            100 * misallocation_cost / (avg_direct_cost + misallocation_cost + externality_cost),
+            100 * externality_cost / (avg_direct_cost + misallocation_cost + externality_cost),
             100
         ]
     })
@@ -577,7 +577,7 @@ def simulate_verification_policy(params, phi_values=[1.0, 1.5, 2.0, 2.5, 3.0], n
         results.append({
             'phi': phi,
             'avg_greenwashing': greenwashing.mean(),
-            'greenwashing_reduction': 100 * (1 - greenwashing.mean() / results[0]['avg_greenwashing']) if results else 0,
+            'greenwashing_reduction': 100 * (1 - greenwashing.mean() / greenwashing.mean() if phi > phi_values[0] else 0),
             'direct_costs': direct_costs.mean(),
             'misallocation_costs': misallocation,
             'total_welfare_loss': total_welfare_loss
