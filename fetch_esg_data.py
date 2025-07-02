@@ -6,7 +6,7 @@ import logging
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
         logging.FileHandler("fetch_esg_data.log"),
@@ -57,6 +57,7 @@ def fetch_esg_data(query):
         }
     )
     response.raise_for_status()
+    logging.debug(f"response for {query}: {response}")
     if "json" in response.headers.get("Content-Type"):
         response_data = response.json()
         if isinstance(response_data, list):
@@ -85,6 +86,8 @@ def save_to_parquet(data, file_path):
         else:
             normalized_data[key] = value
 
+    logging.debug(f"normalized: {normalized_data}")
+
     # Flatten nested structures in normalized data
     flattened_data = {}
     for key, value in normalized_data.items():
@@ -92,6 +95,8 @@ def save_to_parquet(data, file_path):
             flattened_data[key] = value.to_dict(orient='records')
         else:
             flattened_data[key] = value
+
+    logging.debug(f"flattened: {flattened_data}")
 
     # Convert flattened data into a DataFrame
     df = pd.DataFrame(flattened_data.items(), columns=['query', 'data'])
