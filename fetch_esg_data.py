@@ -128,7 +128,7 @@ def fetch_esg_data(query):
     response.raise_for_status()
     if "json" in response.headers.get("Content-Type"):
         response_data = response.json()
-        logging.debug(f"response for {query}: {response_data}")
+        logging.info(f"Raw response for {query}: {response_data}")
         results = []
         if isinstance(response_data, list):
             # Map response data to appropriate dataclass instances
@@ -255,7 +255,7 @@ def fetch_esg_data(query):
         return results
     else:
         raise ValueError(
-            f"Unexpected content type: {response.headers.get('Content-Type')}"
+            f"Unexpected content type: {response.headers.get('Content-Type')}. Raw response: {response.text}"
         )
 
 
