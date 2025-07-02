@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import requests
+from datetime import datetime
 
 
 def fetch_esg_data(query):
