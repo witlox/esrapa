@@ -8,6 +8,7 @@ def fetch_esg_data(source_name, query):
     """
     sources = {
         "WWF Risk Filter Suite": "https://riskfilter.org/",
+        "MSCI ESG Fund Ratings": "https://www.msci.com/our-solutions/esg-investing/esg-fund-ratings-climate-search-tool",
         "MSCI ESG Ratings": "https://www.msci.com/our-solutions/esg-investing/esg-ratings-climate-search-tool",
         "Sustainalytics ESG Risk Ratings": "https://www.sustainalytics.com/esg-ratings",
         "Refinitiv ESG Scores": "https://www.refinitiv.com/en/sustainable-finance/esg-scores",
@@ -40,7 +41,7 @@ def main():
     parquet_file = "esg_data.parquet"
     if not os.path.exists(parquet_file):
         print("Fetching ESG data from free sources...")
-        source_name = "MSCI ESG Ratings"  # Example source
+        source_name = "Sustainalytics ESG Risk Ratings"  # Example source
         query = "AAPL"  # Example query (ticker or company name)
         esg_data = fetch_esg_data(source_name, query)
         save_to_parquet(esg_data, parquet_file)
