@@ -8,16 +8,16 @@ def fetch_esg_data(source_name, query):
     Fetch ESG data from various free sources.
     """
     sources = {
-        "WWF Risk Filter Suite": "https://riskfilter.org/",
-        "MSCI ESG Fund Ratings": "https://www.msci.com/our-solutions/esg-investing/esg-fund-ratings-climate-search-tool",
-        "MSCI ESG Ratings": "https://www.msci.com/our-solutions/esg-investing/esg-ratings-climate-search-tool",
-        "Sustainalytics ESG Risk Ratings": "https://www.sustainalytics.com/esg-ratings",
-        "Refinitiv ESG Scores": "https://www.refinitiv.com/en/sustainable-finance/esg-scores",
-        "SASB Materiality Finder": "https://www.sasb.org/standards/materiality-finder/find/",
-        "S&P Global ESG Scores": "https://www.spglobal.com/esg/solutions/data-intelligence-esg-scores",
-        "UN Data": "https://data.un.org/default.aspx",
-        "World Bank Open Data": "https://data.worldbank.org/",
-        "Sustainable Development Report": "https://dashboards.sdgindex.org/profiles",
+        "WWF Risk Filter Suite": "https://riskfilter.org/api/data",
+        "MSCI ESG Fund Ratings": "https://www.msci.com/api/esg-fund-ratings",
+        "MSCI ESG Ratings": "https://www.msci.com/api/esg-ratings",
+        "Sustainalytics ESG Risk Ratings": "https://www.sustainalytics.com/api/esg-risk-ratings",
+        "Refinitiv ESG Scores": "https://www.refinitiv.com/api/esg-scores",
+        "SASB Materiality Finder": "https://www.sasb.org/api/materiality-finder",
+        "S&P Global ESG Scores": "https://www.spglobal.com/api/esg-scores",
+        "UN Data": "https://data.un.org/api/data",
+        "World Bank Open Data": "https://data.worldbank.org/api/data",
+        "Sustainable Development Report": "https://dashboards.sdgindex.org/api/profiles",
     }
 
     if source_name not in sources:
