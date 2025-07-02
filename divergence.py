@@ -31,67 +31,8 @@ print("This notebook implements validation methods from the theoretical model")
 print("using publicly available ESG rating data and synthetic generation.\n")
 
 # %% [markdown]
-# ## 1. Simulate ESG Rating Data (Proxy for Public Data)
-# 
-# Since we cannot directly access WRDS or proprietary data in this environment,
-# we'll simulate data that matches the statistical properties documented in
-# Berg et al. (2022) and other public sources.
-
-# %%
-def generate_esg_ratings_data(n_firms=1000, n_raters=6):
-    """
-    Generate synthetic ESG ratings data matching empirical properties
-    
-    Parameters from Berg et al. (2022):
-    - Average correlation between raters: 0.54
-    - Measurement divergence: 56% of total
-    - Scope divergence: 38% of total
-    - Weight divergence: 6% of total
-    """
-    
-    # True ESG scores (latent variable)
-    true_scores = np.random.beta(2.3, 4.8, n_firms)  # Matches calibrated distribution
-    
-    # Rater characteristics
-    rater_detection = np.array([0.15, 0.28, 0.42, 0.51, 0.64, 0.72])  # From calibration
-    rater_noise = np.array([0.14, 0.12, 0.10, 0.09, 0.08, 0.08])
-    rater_bias = np.random.normal(0, 0.05, n_raters)  # Small systematic biases
-    
-    # Generate ratings
-    ratings = pd.DataFrame()
-    
-    for j in range(n_raters):
-        # Base rating = true score + detection adjustment + noise
-        base_rating = true_scores.copy()
-        
-        # Greenwashing detection (firms with high true scores get caught more)
-        greenwashing = np.maximum(0, true_scores - np.random.uniform(0, 0.3, n_firms))
-        detected = np.random.binomial(1, rater_detection[j], n_firms)
-        
-        # Adjust for detection
-        adjusted_rating = base_rating - detected * greenwashing * rater_detection[j]
-        
-        # Add measurement noise and bias
-        noise = np.random.normal(0, rater_noise[j], n_firms)
-        final_rating = adjusted_rating + noise + rater_bias[j]
-        
-        # Clip to [0, 1] and scale to rater's scale
-        final_rating = np.clip(final_rating, 0, 1)
-        
-        ratings[f'Rater_{j+1}'] = final_rating
-    
-    # Add firm characteristics
-    ratings['firm_id'] = range(n_firms)
-    ratings['true_score'] = true_scores
-    ratings['size_decile'] = pd.qcut(np.random.lognormal(3, 1.5, n_firms), 10, labels=False)
-    ratings['industry'] = np.random.choice(['Energy', 'Finance', 'Tech', 'Manufacturing', 'Services'], n_firms)
-    ratings['country'] = np.random.choice(['USA', 'UK', 'Germany', 'France', 'Japan'], n_firms, p=[0.4, 0.2, 0.15, 0.15, 0.1])
-    
-    return ratings
-
-# Generate the data
-esg_data = generate_esg_ratings_data(n_firms=1000)
-print(f"Generated ESG ratings for {len(esg_data)} firms from 6 rating agencies")
+# Load ESG data from esg_data.parquet
+print(f"Loaded ESG data for analysis")
 print("\nFirst 5 rows of data:")
 print(esg_data.head())
 
