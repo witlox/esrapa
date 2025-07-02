@@ -57,10 +57,13 @@ def calculate_divergence_metrics(ratings_df, rater_cols):
         ratings = row[rater_cols].values
         n = len(ratings)
         div = 0
-        for i in range(n):
-            for j in range(i+1, n):
-                div += (ratings[i] - ratings[j]) ** 2
-        divergence_scores.append(div / (n * (n - 1) / 2))
+        if n > 1:  # Ensure no division by zero
+            for i in range(n):
+                for j in range(i+1, n):
+                    div += (ratings[i] - ratings[j]) ** 2
+            divergence_scores.append(div / (n * (n - 1) / 2))
+        else:
+            divergence_scores.append(0)  # Default divergence for single rater
     
     ratings_df['divergence'] = divergence_scores
     
