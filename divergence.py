@@ -105,7 +105,6 @@ def decompose_divergence(ratings_df, rater_cols):
             scaler.fit_transform(numeric_rater_cols),
             columns=rater_cols
         )
-        columns=rater_cols
     )
     
     # Principal Component Analysis to identify common factors
