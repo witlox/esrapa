@@ -118,7 +118,7 @@ def fetch_esg_data(query):
         "emissions_by_country": "/country/emissions",
         "emissions_trends": "/country/emissions",
         "emissions_forecast": "/country/emissions",
-        "rating_divergence": "/assets/{sourceId}",
+        "rating_divergence": "/assets",
         "insurance_market_dynamics": "/assets/emissions",
         "greenwashing_effects": "/assets/emissions"
     }
@@ -136,12 +136,17 @@ def fetch_esg_data(query):
             "to": datetime.now().year,
             "sector_optional": ["power", "transportation", "buildings"]
         }
-    elif query in ["emissions_by_asset", "rating_divergence", "insurance_market_dynamics", "greenwashing_effects"]:
+    elif query in ["emissions_by_asset", "insurance_market_dynamics", "greenwashing_effects"]:
         params = {
             "year": 2022,
             "countries_csv_optional": ["USA", "CAN", "MEX"]
         }
     
+    if query == "rating_divergence":
+        source_id = params.get("sourceId", 1)  # Default to 1 if no sourceId is provided
+        url = f"{base_url}/assets/{source_id}"
+        del params["sourceId"]  # Remove sourceId from params as it's part of the URL
+
     response = requests.get(
         url,
         headers=headers,
