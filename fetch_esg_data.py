@@ -3,30 +3,18 @@ import pandas as pd
 import requests
 
 
-def fetch_esg_data(source, query):
+def fetch_esg_data(query):
     """
-    Fetch ESG data from CDP or Climate TRACE.
+    Fetch ESG data from Climate TRACE API.
     """
-    sources = {
-        "CDP": "https://www.cdp.net/en/data",
-        "Climate TRACE": "https://climatetrace.org/data"
+    url = "https://api.climatetrace.org/v6/assets"
+    headers = {
+        "Accept": "application/json"
     }
-    
-    if source not in sources:
-        raise ValueError(f"Source '{source}' is not supported.")
-    
-    url = sources[source]
-    response = requests.get(url, params={"query": query})
+    response = requests.get(url, headers=headers, params={"query": query})
     response.raise_for_status()
     if response.headers.get("Content-Type") == "application/json":
         return response.json()
-    elif response.headers.get("Content-Type").startswith("text/html"):
-        print(f"Received HTML content from {url}. Saving for debugging.")
-        with open(f"debug_response_{source}.html", "w") as f:
-            f.write(response.text)
-        raise ValueError(
-            f"Unexpected HTML content received from {url}. Check debug_response_{source}.html for details."
-        )
     else:
         raise ValueError(
             f"Unexpected content type: {response.headers.get('Content-Type')}"
@@ -47,18 +35,10 @@ def main():
     """
     parquet_file = "esg_data.parquet"
     if not os.path.exists(parquet_file):
-        print("Fetching ESG data from CDP and Climate TRACE...")
+        print("Fetching ESG data from Climate TRACE...")
         query = "AAPL"  # Example query (ticker or company name)
-        esg_data_cdp = fetch_esg_data("CDP", query)
-        esg_data_climate_trace = fetch_esg_data("Climate TRACE", query)
-        
-        # Combine data from both sources
-        combined_data = {
-            "CDP": esg_data_cdp,
-            "Climate TRACE": esg_data_climate_trace
-        }
-        
-        save_to_parquet(combined_data, parquet_file)
+        esg_data = fetch_esg_data(query)
+        save_to_parquet(esg_data, parquet_file)
         print(f"ESG data saved to {parquet_file}")
     else:
         print(f"{parquet_file} already exists. Skipping data fetch.")
