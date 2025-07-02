@@ -59,9 +59,24 @@ def main():
     parquet_file = "esg_data.parquet"
     if not os.path.exists(parquet_file):
         print("Fetching ESG data from Climate TRACE...")
-        query = "AAPL"  # Example query (ticker or company name)
-        esg_data = fetch_esg_data(query)
-        save_to_parquet(esg_data, parquet_file)
+        queries = [
+            "emissions_by_sector",
+            "emissions_by_asset",
+            "emissions_by_country",
+            "emissions_trends",
+            "emissions_forecast",
+            "rating_divergence",
+            "insurance_market_dynamics",
+            "greenwashing_effects"
+        ]
+    
+        all_data = {}
+        for query in queries:
+            print(f"Fetching ESG data for query: {query}")
+            esg_data = fetch_esg_data(query)
+            all_data[query] = esg_data
+    
+        save_to_parquet(all_data, parquet_file)
         print(f"ESG data saved to {parquet_file}")
     else:
         print(f"{parquet_file} already exists. Skipping data fetch.")
