@@ -66,7 +66,8 @@ def save_to_parquet(data, file_path):
         else:
             normalized_data[key] = value
 
-    df = pd.DataFrame(normalized_data)
+    # Convert normalized data into a DataFrame
+    df = pd.DataFrame.from_dict(normalized_data, orient='index').reset_index()
     df.to_parquet(file_path, index=False)
 
 
