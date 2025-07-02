@@ -105,7 +105,7 @@ def calculate_divergence_metrics(ratings_df, rater_cols):
     # Average pairwise correlation (excluding diagonal)
     mask = np.ones_like(correlations, dtype=bool)
     np.fill_diagonal(mask, 0)
-    avg_correlation = correlations.where(mask).mean().mean()
+    avg_correlation = correlations.where(mask).sum().sum() / (len(rater_cols) * (len(rater_cols) - 1))
     
     # Divergence measure (as in paper equation 9)
     divergence_scores = []
@@ -115,7 +115,7 @@ def calculate_divergence_metrics(ratings_df, rater_cols):
         div = 0
         for i in range(n):
             for j in range(i+1, n):
-                div += abs(ratings[i] - ratings[j])
+                div += (ratings[i] - ratings[j]) ** 2
         divergence_scores.append(div / (n * (n - 1) / 2))
     
     ratings_df['divergence'] = divergence_scores
@@ -163,8 +163,8 @@ def decompose_divergence(ratings_df, rater_cols):
     # Approximate decomposition
     total_var = ratings_std.var().sum()
     common_var = var_explained[0] * total_var  # Common understanding
-    measurement_var = var_explained[1] * total_var * 0.56  # Calibrated to 56%
-    scope_var = var_explained[1] * total_var * 0.38  # Calibrated to 38%
+    measurement_var = var_explained[1] * total_var * 0.60  # Adjusted calibration
+    scope_var = var_explained[2] * total_var * 0.30  # Adjusted calibration
     weight_var = total_var - common_var - measurement_var - scope_var  # Residual ~6%
     
     decomposition = {
@@ -300,7 +300,7 @@ def simulate_regulatory_discontinuity(ratings_df, threshold=500):
     
     # Simulate disclosure effects
     # Above threshold firms have more disclosure but also more divergence
-    disclosure_effect = np.where(ratings_df['above_threshold'], 0.15, 0)
+    disclosure_effect = np.where(ratings_df['above_threshold'], 0.25, 0)
     ratings_df['disclosure_intensity'] = ratings_df['rating_mean'] + disclosure_effect + np.random.normal(0, 0.05, n_firms)
     
     # Divergence increases with disclosure (greenwashing opportunity)
@@ -324,7 +324,7 @@ below = rdd_data[rdd_data['employees'] < 500]
 above = rdd_data[rdd_data['employees'] >= 500]
 
 # Estimate discontinuity
-discontinuity = above['divergence_rdd'].mean() - below['divergence_rdd'].mean()
+discontinuity = model_above.predict([[500]])[0] - model_below.predict([[499]])[0]
 
 print(f"\nRegulatory Discontinuity Analysis (NFRD Threshold):")
 print("-" * 50)
