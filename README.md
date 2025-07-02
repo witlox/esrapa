@@ -9,17 +9,15 @@ This repository contains Python scripts for analyzing ESG ratings, modeling insu
 
 ## Installation
 To install the required dependencies, run:
-```bash
-pip install -r requirements.txt
-```
+
 
 ## Usage
 1. **Divergence Analysis**:
-   - Use `divergence.py` to generate ESG ratings data and analyze divergence metrics.
+   - Use  to generate ESG ratings data and analyze divergence metrics.
 2. **Agent-Based Modeling**:
-   - Use `dynamics.py` to simulate ESG insurance markets and validate agent behaviors.
+   - Use  to simulate ESG insurance markets and validate agent behaviors.
 3. **Efficiency Analysis**:
-   - Use `efficiency.py` for equilibrium analysis, welfare decomposition, and insurance market simulations.
+   - Use  for equilibrium analysis, welfare decomposition, and insurance market simulations.
 
 ## Dependencies
 - Python 3.8 or higher
