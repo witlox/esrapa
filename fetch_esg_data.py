@@ -143,7 +143,10 @@ def fetch_esg_data(query):
         }
     
     if query == "rating_divergence":
-        source_id = params.get("sourceId", 1)  # Default to 1 if no sourceId is provided
+        source_id = params.get("sourceId")
+        if not source_id:
+            logging.error("Missing sourceId for rating_divergence query. Skipping request.")
+            return []
         url = f"{base_url}/assets/{source_id}"
         if "sourceId" in params:
             del params["sourceId"]  # Remove sourceId from params as it's part of the URL
