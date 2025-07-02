@@ -46,7 +46,7 @@ def fetch_esg_data(query):
         }
     )
     response.raise_for_status()
-    if response.headers.get("Content-Type") == "application/json":
+    if "json" in response.headers.get("Content-Type"):
         return response.json()
     else:
         raise ValueError(
