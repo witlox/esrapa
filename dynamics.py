@@ -264,7 +264,7 @@ class ESGInsuranceMarket:
                 'disclosure': firm.disclosure,
                 'greenwashing': firm.greenwashing,
                 'avg_rating': np.mean(firm.ratings) if firm.ratings else 0,
-                'industry_effect': firm_data.groupby('industry')['greenwashing'].mean().var()
+                'industry_effect': firm_data.groupby('industry')['greenwashing'].mean().var(),
                 'rating_std': np.std(firm.ratings) if firm.ratings else 0,
                 'reputation': firm.reputation
             })
